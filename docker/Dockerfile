@@ -33,13 +33,11 @@ ENV CXX_ABI "${cxx_abi}"
 # cloud build. Otherwise, just use local.
 # https://github.com/GoogleCloudPlatform/cloud-builders/issues/435
 COPY . /pytorch/xla
-RUN if [ "${cloud_build}" = true ]; then github_branch="${release_version}" && \
-  if [ "${release_version}" = "nightly" ]; then github_branch="master"; fi && \
-  cd /pytorch && \
+RUN cd /pytorch && \
   rm -rf xla && \
-  git clone -b "${github_branch}" --recursive https://github.com/pytorch/xla && \
+  git clone -b master --recursive https://github.com/TaridaGeorge/xla && \
   cd / && \
-  git clone -b "${github_branch}" --recursive https://github.com/pytorch-tpu/examples tpu-examples; fi
+  git clone -b master --recursive https://github.com/pytorch-tpu/examples tpu-examples; fi
 
 RUN cd /pytorch && bash xla/scripts/build_torch_wheels.sh ${python_version} ${release_version}
 
