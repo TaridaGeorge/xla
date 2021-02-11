@@ -1,5 +1,5 @@
 # Cloud Build Configuration which:
-# (1) Builds, tests, and pushes gcr.io/tpu-pytorch/xla image
+# (1) Builds, tests, and pushes gcr.io/repsmate/xla image
 # (2) Collects and stores torch and torch_xla wheels
 steps:
 - name: 'gcr.io/cloud-builders/docker'
@@ -10,20 +10,20 @@ steps:
           '--build-arg', 'python_version=${_PYTHON_VERSION}',
           '--build-arg', 'cloud_build=true',
           '--build-arg', 'release_version=${_RELEASE_VERSION}',
-          '-t', 'gcr.io/tpu-pytorch/xla:${_IMAGE_NAME}',
+          '-t', 'gcr.io/repsmate/xla:${_IMAGE_NAME}',
           '-f', 'docker/Dockerfile', '.'
         ]
   timeout: 14400s
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: bash
-  args: ['-c', 'docker tag gcr.io/tpu-pytorch/xla:${_IMAGE_NAME} gcr.io/tpu-pytorch/xla:${_IMAGE_NAME}_$(date -u +%Y%m%d)']
-- name: 'gcr.io/tpu-pytorch/xla:${_IMAGE_NAME}'
+  args: ['-c', 'docker tag gcr.io/repsmate/xla:${_IMAGE_NAME} gcr.io/repsmate/xla:${_IMAGE_NAME}_$(date -u +%Y%m%d)']
+- name: 'gcr.io/repsmate/xla:${_IMAGE_NAME}'
   entrypoint: bash
   args: ['-c', 'source /pytorch/xla/docker/common.sh && run_deployment_tests']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/tpu-pytorch/xla']
+  args: ['push', 'gcr.io/repsmate/xla']
   timeout: 1800s
-- name: 'gcr.io/tpu-pytorch/xla:${_IMAGE_NAME}'
+- name: 'gcr.io/repsmate/xla:${_IMAGE_NAME}'
   entrypoint: 'bash'
   args: ['-c', 'source /pytorch/xla/docker/common.sh && collect_wheels ${_RELEASE_VERSION}']
 
@@ -42,5 +42,5 @@ timeout: 18000s
 artifacts:
   objects:
     # CUDA wheels exported under `wheels/cuda/<cuda_version>`
-    location: 'gs://tpu-pytorch/wheels/$_UPLOAD_SUBDIR'
+    location: 'gs://repsmate/wheels/$_UPLOAD_SUBDIR'
     paths: ['/**/*.whl']
