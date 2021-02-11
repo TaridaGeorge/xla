@@ -68,6 +68,7 @@ xla::XlaOp ConvertTo(xla::XlaOp op, xla::PrimitiveType from,
     case xla::PrimitiveType::U32:
     case xla::PrimitiveType::BF16:
     case xla::PrimitiveType::F32:
+    case xla::PrimitiveType::F64:
       return xla::ConvertElementType(op, to);
     case xla::PrimitiveType::S64:
     case xla::PrimitiveType::U64: {
